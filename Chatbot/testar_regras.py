@@ -25,6 +25,28 @@ CASOS = [
     (["Não tenho falta de ar, só tosse"], None),
     (["Sem dor no peito, mas estou cansado"], None),
     (["Não aguento mais essa dor no peito"], 4),  # não deve ser tratada como negação
+    # ---- Diabetes ----
+    (["Tenho diabetes e minha glicemia está 45"], 3),
+    (["Minha glicemia deu 62 e estou suando frio e tremendo"], 3),
+    (["Meu pai é diabético, está inconsciente e a glicemia baixou"], 4),
+    (["Tenho diabetes e meu pai desmaiou"], 4),
+    (["Minha glicemia está 350 e estou vomitando"], 4),
+    (["Minha glicemia está 350 e estou com muita sonolência"], 4),
+    (["Glicemia deu 320, sem sintomas, estou bem"], 3),
+    (["Sou diabético e estou com hálito de maçã"], 4),
+    (["Sou diabético e estou com respiração rápida e profunda"], 4),
+    (["Estou com glicemia alta e muita sonolência"], 4),
+    (["Tenho diabetes e uma ferida no pé com pus"], 3),
+    (["Tenho diabetes e estou vomitando, não consigo beber nada"], 3),
+    (["Tenho diabetes e perdi a visão de repente de um olho"], 3),
+    (["Estou com hipoglicemia"], 3),
+    (["Estou tremendo e suando frio, uso insulina"], 3),
+    (["O que é hipoglicemia?"], None),
+    (["Tenho diabetes tipo 2 e quero saber que alimentos posso comer"], None),
+    (["Tenho muita sede e urino demais há semanas"], None),
+    (["Minha glicemia em jejum foi 110"], None),
+    (["Meu colesterol deu 250 mg/dl e a glicemia 130"], None),
+    (["Meu filho de 8 anos tem diabetes e está com febre"], None),
 ]
 
 

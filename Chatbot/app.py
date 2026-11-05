@@ -1,4 +1,4 @@
-"""Chatbot de orientação inicial em saúde (protótipo acadêmico).
+"""Chatbot de orientação sobre DIABETES (protótipo acadêmico).
 
 Executar:  streamlit run app.py
 Fluxo:     mensagem -> regras de urgência (código) -> se não houver alerta -> IA (Google Gemini)
@@ -28,7 +28,7 @@ ROTULOS = {
     4: "Nível 4: emergência (SAMU 192)",
 }
 
-st.set_page_config(page_title="Orientação inicial em saúde", page_icon="🩺")
+st.set_page_config(page_title="Orientação sobre diabetes", page_icon="🩺")
 
 
 @st.cache_resource
@@ -102,15 +102,17 @@ def mostrar_nivel(nivel: int | None) -> None:
 
 
 # ---------- Interface ----------
-st.title("🩺 Orientação inicial em saúde")
+st.title("🩺 Orientação sobre diabetes")
 st.caption(
-    "Protótipo acadêmico de pesquisa (TCC). **Não faz diagnóstico, não indica medicamentos e "
+    "Protótipo acadêmico de pesquisa (TCC) **voltado à orientação sobre diabetes**. "
+    "**Não faz diagnóstico, não indica nem ajusta medicamentos ou insulina e "
     "não substitui atendimento médico.** Em emergência, ligue **192 (SAMU)**. "
     "Não informe dados pessoais nem seus sintomas reais: use apenas a situação fictícia proposta. "
     "As mensagens são processadas por um serviço de IA de terceiros (Google)."
 )
 
 with st.sidebar:
+    st.markdown("**Foco:** diabetes")
     st.markdown(f"**Versão do prompt:** {VERSAO_PROMPT}")
     st.markdown(f"**Modelo:** {MODELO}")
     if st.button("Nova conversa"):
@@ -125,7 +127,7 @@ for m in st.session_state.mensagens:
         st.markdown(m["content"])
         mostrar_nivel(m.get("nivel"))
 
-entrada = st.chat_input("Descreva a situação (fictícia)...")
+entrada = st.chat_input("Descreva a situação (fictícia) relacionada ao diabetes...")
 
 if entrada:
     st.session_state.mensagens.append({"role": "user", "content": entrada})

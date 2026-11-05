@@ -1,13 +1,17 @@
-CHATBOT DE ORIENTAÇÃO INICIAL EM SAÚDE (PROTÓTIPO DE TCC)
-=========================================================
+CHATBOT DE ORIENTAÇÃO SOBRE DIABETES (PROTÓTIPO DE TCC)
+=======================================================
+Foco: pessoas com diabetes (tipo 1, tipo 2 ou gestacional), familiares e cuidadores.
+Versão do prompt: v2-diabetes
 
 
 ARQUIVOS DA PASTA
 -----------------
-regras_urgencia.py  -> Regras de alerta em código (sem IA). Rodam antes do modelo.
-prompt_sistema.py   -> Prompt do sistema (versionado).
+regras_urgencia.py  -> Regras de alerta em código (sem IA), gerais e de diabetes
+                       (hipoglicemia, crise de açúcar alto, pé, visão, valores de glicemia).
+prompt_sistema.py   -> Prompt do sistema, com foco em diabetes (versionado).
 app.py              -> Interface web (Streamlit) que junta regras + IA (Google Gemini).
-testar_regras.py    -> Testes das regras de urgência.
+testar_regras.py    -> Testes das regras de urgência (42 casos, gerais e de diabetes).
+testar_api.py       -> Diagnóstico: descobre quais modelos de IA respondem com a sua chave.
 requirements.txt    -> Lista das bibliotecas necessárias.
 .gitignore          -> Impede subir a chave e arquivos temporários para o GitHub.
 README.txt          -> Este guia.
@@ -29,7 +33,7 @@ um comando por vez:
   python testar_regras.py
 
 O último comando confere as regras de urgência e não precisa de chave.
-Resultado esperado: "21/21 casos corretos".
+Resultado esperado: "42/42 casos corretos".
 
 
 PASSO 2: COLOCAR A CHAVE DA API (ESCOLHA UMA FORMA)
@@ -86,9 +90,11 @@ O navegador abre sozinho. Se não abrir, acesse o endereço mostrado no
 terminal (normalmente http://localhost:8501).
 
 Teste rápido:
-  - Digite "estou com tosse seca há dois dias": deve responder com a IA.
-  - Digite "dor forte no peito": deve mostrar o alerta fixo do SAMU (192),
-    sem usar a IA.
+  - Digite "tenho diabetes tipo 2 e quero cuidar melhor dos meus pés":
+    deve responder com a IA (pode fazer perguntas antes de orientar).
+  - Digite "minha glicemia está 45": deve mostrar a mensagem fixa de
+    hipoglicemia (regra dos 15 g), sem usar a IA.
+  - Digite "dor forte no peito": deve mostrar o alerta fixo do SAMU (192).
 
 
 PASSO 5: PUBLICAR COM LINK (OPCIONAL)
@@ -101,6 +107,25 @@ PASSO 5: PUBLICAR COM LINK (OPCIONAL)
   3. Teste o link no celular antes de divulgar.
 
 
+COMO ATUALIZAR NO GITHUB (SUBSTITUIR OS ARQUIVOS)
+-------------------------------------------------
+Arquivos alterados nesta versão (mesmos nomes de antes):
+  app.py, prompt_sistema.py, regras_urgencia.py, testar_regras.py, README.txt
+Não mudaram: requirements.txt, testar_api.py, .gitignore, registros.
+
+Pelo site do GitHub:
+  1. Abra o repositório e clique em "Add file" > "Upload files".
+  2. Arraste os 5 arquivos acima (eles substituem os antigos de mesmo nome).
+  3. Escreva uma mensagem, ex.: "Foco em diabetes (prompt v2)", e confirme em
+     "Commit changes".
+Pelo terminal, dentro da pasta do projeto:
+  git add .
+  git commit -m "Foco em diabetes (prompt v2)"
+  git push
+Se o app estiver publicado (ex.: Streamlit Community Cloud), ele atualiza
+sozinho após o commit, ou use "Reboot app" no painel.
+
+
 PROBLEMAS COMUNS
 ----------------
 Mensagem: "Configuração pendente: chave da API não encontrada"
@@ -110,6 +135,13 @@ Mensagem: "Configuração pendente: chave da API não encontrada"
 
 Mensagem: "Modelo não encontrado"
   Causa: nome do modelo desatualizado (passo 3).
+
+Mensagem: "O serviço de IA do Google está instável ou sobrecarregado"
+  Causa: o modelo escolhido está sobrecarregado ou instável no momento
+         (comum em modelos novos no plano gratuito).
+  Solução: rode "python testar_api.py". Ele lista os modelos disponíveis e
+           mostra quais respondem ([OK]). Copie um deles para a linha MODELO
+           do app.py e rode o chatbot de novo.
 
 Mensagem: "O limite gratuito de uso foi atingido"
   Causa: muitas requisições em pouco tempo. Aguarde 1 minuto e tente de novo.
@@ -136,5 +168,11 @@ LIMITAÇÕES (CITE NO ARTIGO)
   - O modelo de IA pode errar; por isso, a urgência grave é decidida por
     regra fixa.
   - O app NÃO grava conversas.
+  - O chatbot NÃO indica, ajusta nem calcula doses de insulina ou medicamentos.
+  - As mensagens de hipoglicemia (regra dos 15 g) e de crise de açúcar alto
+    devem ser revisadas por um profissional de saúde antes da coleta oficial.
+  - Os limites de glicemia usados nas regras (abaixo de 70, abaixo de 54 e
+    300 ou mais, em mg/dL) são referências gerais e precisam de fonte citada
+    no artigo (diretriz de sociedade médica de diabetes).
   - Registre o modelo usado, a versão do prompt (VERSAO_PROMPT) e das regras
     a cada mudança.
