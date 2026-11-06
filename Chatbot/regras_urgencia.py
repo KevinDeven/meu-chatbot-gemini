@@ -149,7 +149,7 @@ REGRAS = (
         r"vomit\w* (com )?sangue", r"sangue no vomito", r"tossi\w* (com )?sangue",
     )),
     Regra("gestante_alerta", "gestacao", 4,
-          (r"sangramento", r"sangrando", r"dor forte", r"perda de liquido", r"bebe (nao )?(mexe|mexendo)"),
+          (r"sangramento", r"sangrando", r"dor forte", r"perda de liquido", r"bebe (nao|parou de) (mexe|mexendo|mexer)", r"nao (sinto|esta) (o )?bebe (mexer|mexendo)"),
           exige=(r"gravida", r"gestante", r"gravidez")),
     Regra("trauma_grave", "trauma", 4, (
         r"atropel", r"acidente (grave|de carro|de moto)", r"queda de (altura|laje|telhado)",
@@ -167,8 +167,8 @@ REGRAS = (
 
     # ---- Nível 4: diabetes ----
     Regra("hipoglicemia_grave", "diabetes", 4, (
-        r"hipoglicemia", r"glicemia baixa", r"glicose baixa", r"acucar baixo",
-        r"baixou (a )?(glicemia|glicose|o acucar)",
+        r"hipoglicemia", r"(glicemia|glicose|acucar) (esta |ta |estava |ficou |muito )*baix[oa]",
+        r"baixou (a )?(glicemia|glicose|o acucar)", r"(glicemia|glicose|acucar) (\w+ )?baixou",
     ), exige=(
         r"desmai", r"inconsciente", r"convuls", r"nao (acorda|responde|consegue (engolir|beber|comer|falar))",
         r"confus", r"desorientad", r"muito sonolent",
@@ -212,8 +212,9 @@ REGRAS = (
 
     # ---- Nível 3: diabetes ----
     Regra("hipoglicemia_relatada", "diabetes", 3, (
-        r"\b(estou|to|tou|esta|estava|fiquei|ficou|tive|teve|tenho|tem|sinto|sentindo)\b"
+        r"(?<!nao )(?<!nunca )\b(estou|to|tou|esta|estava|fiquei|ficou|tive|teve|tenho|tem|sinto|sentindo)\b"
         r".{0,30}(hipoglicemia|glicemia baixa|glicose baixa|acucar baixo)",
+        r"(?<!nao )(?<!nunca )(glicemia|glicose|acucar) (esta |ta |estava |ficou |muito )+baix[oa]",
     ), mensagem=MSG_HIPOGLICEMIA),
     Regra("hipoglicemia_sintomas", "diabetes", 3, (
         r"tremor", r"tremendo", r"suor frio", r"suando frio", r"suando muito",
@@ -242,7 +243,7 @@ REGRAS = (
 # Negação simples logo antes do termo: "não tenho falta de ar", "sem dor no peito".
 # (Não captura "não aguento mais essa dor no peito", que continua disparando.)
 _NEGACAO = re.compile(
-    r"\b(nao (tenho|sinto|estou com|apresento|tive|tem|ha)|sem|nenhum[a]?|nega|nunca tive)( \w+){0,2} $"
+    r"\b(nao (tenho|sinto|estou com|apresento|tive|tem|ha)|sem|nem|nenhum[a]?|nega|nunca tive)( \w+){0,2} $"
 )
 
 # Valores de glicemia digitados (mg/dL): "glicemia 45", "glicose em 320", "250 mg/dl".
@@ -319,7 +320,9 @@ def avaliar_urgencia(mensagens_usuario: list[str]) -> Alerta | None:
             continue
         msg = r.mensagem or (MSG_EMERGENCIA if r.nivel == 4 else MSG_HOJE)
         alerta = Alerta(r.id, r.categoria, r.nivel, msg)
-        if melhor is None or alerta.nivel > melhor.nivel:
+        if (melhor is None or alerta.nivel > melhor.nivel
+                or (alerta.nivel == melhor.nivel and alerta.categoria == "diabetes"
+                    and melhor.categoria != "diabetes")):
             melhor = alerta
     glic = _alerta_glicemia(texto)
     if glic is not None and (melhor is None or glic.nivel > melhor.nivel):

@@ -47,6 +47,13 @@ CASOS = [
     (["Minha glicemia em jejum foi 110"], None),
     (["Meu colesterol deu 250 mg/dl e a glicemia 130"], None),
     (["Meu filho de 8 anos tem diabetes e está com febre"], None),
+    (["Não estou com hipoglicemia, só queria saber como cuidar melhor do meu diabetes"], None),
+    (["Não tenho dor no peito nem falta de ar, só tosse"], None),
+    (["Estou grávida e o bebê está mexendo normalmente"], None),
+    (["Estou grávida e o bebê parou de mexer"], 4),
+    (["A minha glicemia está baixa"], 3),
+    (["Meu açúcar está baixo"], 3),
+    (["Minha glicemia está baixa e estou confuso"], 4),
 ]
 
 
