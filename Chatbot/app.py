@@ -1,22 +1,3 @@
-from supabase import create_client
-import json
-
-@st.cache_resource
-def init_connection():
-    url = st.secrets["SUPABASE_URL"]
-    key = st.secrets["SUPABASE_KEY"]
-    return create_client(url, key)
-
-supabase = init_connection()
-
-def salvar_triagem(historico_mensagens):
-    try:
-        conversa_texto = json.dumps(historico_mensagens, ensure_ascii=False, indent=2)
-        supabase.table("resultados_triagem").insert({"historico_conversa": conversa_texto}).execute()
-        st.success("✅ Triagem finalizada e salva com sucesso para a avaliação!")
-    except Exception as e:
-        st.error(f"Erro ao salvar no banco de dados: {e}")
-
 """Chatbot de orientação sobre DIABETES (protótipo acadêmico).
 
 Executar:  streamlit run app.py
@@ -167,10 +148,4 @@ if entrada:
         mostrar_nivel(nivel)
 
     st.session_state.mensagens.append({"role": "assistant", "content": resposta, "nivel": nivel})
-st.sidebar.markdown("---")
-if st.sidebar.button("Finalizar Atendimento e Enviar Avaliação"):
-    if "mensagens" in st.session_state and len(st.session_state.mensagens) > 0:
-        salvar_triagem(st.session_state.mensagens)
-    else:
-        st.warning("O chat está vazio. Realize a triagem primeiro.")
-        
+    
