@@ -167,3 +167,10 @@ if entrada:
         mostrar_nivel(nivel)
 
     st.session_state.mensagens.append({"role": "assistant", "content": resposta, "nivel": nivel})
+st.sidebar.markdown("---")
+if st.sidebar.button("Finalizar Atendimento e Enviar Avaliação"):
+    if "mensagens" in st.session_state and len(st.session_state.mensagens) > 0:
+        salvar_triagem(st.session_state.mensagens)
+    else:
+        st.warning("O chat está vazio. Realize a triagem primeiro.")
+        
